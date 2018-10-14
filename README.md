@@ -5,7 +5,8 @@ katas](https://github.com/praqma-training/docker-katas) and the Praqma
 A GCP project should exists and specified through the variables. Optionally the
 GCP zone and region can also be specified through the variables. The project
 should have compute and container APIs enabled - see also the script
-`project-bootstrap.sh`.
+`project-bootstrap.sh`.  Also, update connection.tf with your gcloud service
+account key file.
 
 The following variables should be reviewed before any deployment of the training infrastructure:
 
