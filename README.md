@@ -5,15 +5,17 @@ katas](https://github.com/praqma-training/docker-katas) and the Praqma
 A GCP project should exists and specified through the variables. Optionally the
 GCP zone and region can also be specified through the variables. The project
 should have compute and container APIs enabled - see also the script
-`project-bootstrap.sh`.  Also, update connection.tf with your gcloud service
-account key file.
+`project-bootstrap.sh`.  By default GCP credentials are taken from your local
+environment, i.e. you should have authenticated against GCP prior to
+running terraform. Alternatively you my want to update connection.tf with your
+gcloud service account key file.
 
 The following variables should be reviewed before any deployment of the training infrastructure:
 
-1. `source_ip_cidr` - the source CIDR from where the training network access
-originates.  Typically the /32 external NAT address of the training network.
-2. `bastion_count` - the number of individual nodes necessary for Docker training
-3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster
+1. `source_ip_cidr` - the source CIDR from where the training network access.
+originates.  Typically the /32 external NAT address of the training network. IMPORTANT: Your project should not have any default firewall rules for this to work.
+2. `bastion_count` - the number of individual nodes necessary for Docker training.
+3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster.
 4. `gce_service_account_key` - the service account used to access the Kubernetes cluster.
 
 An ssh key-pair must be available in the local directory for injection into the
