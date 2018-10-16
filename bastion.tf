@@ -1,7 +1,7 @@
 data "template_file" "startup_script" {
   template = <<EOF
 apt-get update
-apt-get install -y docker.io
+apt-get install -y docker.io docker-compose
 usermod -aG docker ubuntu
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
@@ -38,7 +38,7 @@ EOF
 
 resource "google_compute_instance" "compute-inst" {
   zone = "${var.gcp_zone}"
-  name = "compute-${count.index}"
+  name = "training-${count.index}"
   machine_type = "f1-micro"
   count   = "${var.bastion_count}"
   boot_disk {
@@ -82,7 +82,7 @@ resource "google_compute_firewall" "fw-ssh" {
   network = "${data.google_compute_network.net.name}"
   allow {
     protocol = "tcp"
-    ports    = ["22", "8000"]
+    ports    = ["22", "5000", "8000"]
   }
   source_ranges = "${var.source_ip_cidr}"
   target_tags = [ "bastion" ]
