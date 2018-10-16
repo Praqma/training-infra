@@ -82,7 +82,7 @@ resource "google_compute_firewall" "fw-ssh" {
   network = "${data.google_compute_network.net.name}"
   allow {
     protocol = "tcp"
-    ports    = ["22", "5000", "8000"]
+    ports    = ["22", "5000", "8000", "8080"]
   }
   source_ranges = "${var.source_ip_cidr}"
   target_tags = [ "bastion" ]
