@@ -3,11 +3,11 @@ variable "gcp_project" {
 }
 
 variable "gcp_region" {
-  default = "europe-west3"
+  default = "europe-west1"
 }
 
 variable "gcp_zone" {
-  default = "europe-west3-a"
+  default = "europe-west1-b"
 }
 
 variable "cluster_name" {
@@ -19,7 +19,7 @@ variable "initial_worker_node_count" {
 }
 
 variable "source_ip_cidr" {
-  default = [ "10.0.0.0/24" ]
+  default = [ "0.0.0.0/0" ]
 }
 
 variable "gce_ssh_user" {
@@ -32,6 +32,10 @@ variable "gce_ssh_pub_key_file" {
 
 variable "gce_ssh_private_key_file" {
   default = "testkey"
+}
+
+variable "bastion_machine_type" {
+  default = "g1-small"
 }
 
 variable "bastion_count" {

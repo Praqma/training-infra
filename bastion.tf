@@ -39,7 +39,7 @@ EOF
 resource "google_compute_instance" "compute-inst" {
   zone = "${var.gcp_zone}"
   name = "training-${count.index}"
-  machine_type = "f1-micro"
+  machine_type = "${var.bastion_machine_type}"
   count   = "${var.bastion_count}"
   boot_disk {
     initialize_params {
