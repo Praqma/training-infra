@@ -25,7 +25,7 @@ resource "google_compute_firewall" "fw-k8s-eph-ports" {
 
   allow {
     protocol = "tcp"
-    ports    = ["30000-32767"]
+    ports    = ["3000", "30000-32767"]
   }
   source_ranges = "${var.source_ip_cidr}"
   target_tags = [ "kubernetes" ]
