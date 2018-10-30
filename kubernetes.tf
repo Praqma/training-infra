@@ -1,5 +1,5 @@
 resource "google_container_cluster" "k8cluster" {
-  name               = "${var.cluster_name}"
+  name               = "${var.global_prefix}${var.cluster_name}"
   zone               = "${var.gcp_zone}"
   initial_node_count = "${var.initial_worker_node_count}"
   network            = "${data.google_compute_network.net.name}"
@@ -20,12 +20,12 @@ resource "google_container_cluster" "k8cluster" {
 }
 
 resource "google_compute_firewall" "fw-k8s-eph-ports" {
-  name    = "tcp-allow-ephemeral-ports"
+  name    = "${var.global_prefix}tcp-allow-ephemeral-ports"
   network = "${data.google_compute_network.net.name}"
 
   allow {
     protocol = "tcp"
-    ports    = ["3000", "30000-32767"]
+    ports    = "${var.cluster_ports}"
   }
   source_ranges = "${var.source_ip_cidr}"
   target_tags = [ "kubernetes" ]

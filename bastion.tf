@@ -29,7 +29,7 @@ gcloud container clusters get-credentials $${cluster_name}
 EOF
 
   vars {
-    cluster_name = "${var.cluster_name}"
+    cluster_name = "${var.global_prefix}${var.cluster_name}"
     zone         = "${var.gcp_zone}"
     region       = "${var.gcp_region}"
     project      = "${var.gcp_project}"
@@ -38,7 +38,7 @@ EOF
 
 resource "google_compute_instance" "compute-inst" {
   zone = "${var.gcp_zone}"
-  name = "training-${count.index}"
+  name = "${var.global_prefix}training-${count.index}"
   machine_type = "${var.bastion_machine_type}"
   count   = "${var.bastion_count}"
   boot_disk {
@@ -78,11 +78,11 @@ resource "google_compute_instance" "compute-inst" {
 }
 
 resource "google_compute_firewall" "fw-ssh" {
-  name    = "tcp-ssh"
+  name    = "${var.global_prefix}tcp-ssh"
   network = "${data.google_compute_network.net.name}"
   allow {
     protocol = "tcp"
-    ports    = ["22", "5000", "8000", "8080"]
+    ports    = "${var.bastion_ports}"
   }
   source_ranges = "${var.source_ip_cidr}"
   target_tags = [ "bastion" ]

@@ -11,3 +11,5 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "### Testing access and uptime of host $host"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host uptime
 done
+
+echo "Success - all hosts responded"

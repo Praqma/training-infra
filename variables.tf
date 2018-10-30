@@ -1,3 +1,11 @@
+variable "global_prefix" {
+  default = ""
+}
+
+variable "gce_service_account_key" {
+  default = "service_account_key.json"
+}
+
 variable "gcp_project" {
   default = "training-proj"
 }
@@ -22,6 +30,14 @@ variable "source_ip_cidr" {
   default = [ "0.0.0.0/0" ]
 }
 
+variable "bastion_ports" {
+  default = ["22", "5000", "8000", "8080"]
+}
+
+variable "cluster_ports" {
+  default = ["3000", "30000-32767"]
+}
+
 variable "gce_ssh_user" {
   default = "ubuntu"
 }
@@ -39,9 +55,5 @@ variable "bastion_machine_type" {
 }
 
 variable "bastion_count" {
-  default = 16
-}
-
-variable "gce_service_account_key" {
-  default = "service_account_key.json"
+  default = 1
 }
