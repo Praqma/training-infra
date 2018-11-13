@@ -50,12 +50,18 @@ terraform apply
 
 # Testing and Post-configuration
 
-After the infrastructure has been deployed, the startup script willinstall the
+After the infrastructure has been deployed, the startup script will install the
 necessary components such as Docker and kubectl. To test ssh access availability
 of all bastion hosts, use the folowing test script:
 
 ```
 test-ssh-access.sh
+```
+
+and to test running containers and accessing them use:
+
+```
+test-docker-run.sh
 ```
 
 When bastion hosts are ready, kubectl can be authenticated against the
