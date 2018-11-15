@@ -17,7 +17,7 @@ originates.  Typically the /32 external NAT address of the training network. IMP
 
 3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster.
 
-4. `gce_service_account_key` - the service account used to access the Kubernetes cluster.
+4. `gce_service_account_key` - the service account used to access the Kubernetes cluster. The service account should have the roles `Compute Admin`, `Kubernetes Engine Admin` and `Service Account User`.
 
 5. `global_prefix` - a nice prefix for the resources created by terraform
 
