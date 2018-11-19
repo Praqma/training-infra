@@ -71,10 +71,11 @@ Kubernetes cluster by the following script:
 enable_kubectl.sh
 ```
 
-Subsequently, kubernetes cluster access can be tested with the following script:
+Subsequently, kubernetes cluster access can be tested with the following scripts:
 
 ```
 test-cluster-access.sh
+test-k8s-nginx.sh
 ```
 
 Should you need to get the list of bastion hosts it can be queried as follows:
