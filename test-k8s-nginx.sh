@@ -15,7 +15,7 @@ echo "##############################################"
 INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
-    echo "### Pass 1 - Testing through bastion host $host"
+    echo "### Step 1 - Create test resource through bastion host $host"
     TNAME="nginx-$INST"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl create deploy $TNAME --image nginx
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl expose deploy $TNAME --port 80 --type NodePort
@@ -23,15 +23,17 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
 done
 
 INST=1
+# The loop here is mostly to get the 'per bastion' instance count and 'do things' through all bastions
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
-    echo "### Pass 2 - Testing through bastion host $host"
+    echo "### Step 2 - Testing through global access"
     TNAME="nginx-$INST"
     NODES=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get nodes -o jsonpath='"'{.items[*].status.addresses[?\(@.type=='\"'ExternalIP'\"'\)].address}'"')
     PORT=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get svc $TNAME -o jsonpath='"'{@.spec.ports[0].nodePort}'"')
-    echo "  Cluster nodes: $NODES"
+    echo "  Cluster nodes (external-ip): $NODES"
     for node in $NODES; do
-        echo "    Testing nodeport access through node $node, port $PORT"
+        echo "    Testing nodeport access through cluster node $node, port $PORT"
+	# Note, curl is running locally, i.e. we assume this is 'internet access'
         curl --connect-timeout 60 --max-time 10 --retry 5 --retry-delay 0 --retry-max-time 40 --retry-connrefused -s $node:$PORT | grep -q 'Welcome to nginx!'
         if [ $? -eq 0 ]; then
             #echo "    - Got expected result from Nginx (bastion host $host, node $node, port $PORT)"
@@ -47,7 +49,29 @@ done
 INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
-    echo "### Pass 3 - Testing through bastion host $host"
+    echo "### Step 3 - Testing through bastion host $host"
+    TNAME="nginx-$INST"
+    NODES=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get nodes -o jsonpath='"'{.items[*].status.addresses[?\(@.type=='\"'InternalIP'\"'\)].address}'"')
+    PORT=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get svc $TNAME -o jsonpath='"'{@.spec.ports[0].nodePort}'"')
+    echo "  Cluster nodes (internal-ip): $NODES"
+    for node in $NODES; do
+        echo "    Testing nodeport access through cluster node $node, port $PORT @ bastion host $host"
+        ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host curl -s $node:$PORT | grep -q 'Welcome to nginx!'
+        if [ $? -eq 0 ]; then
+            #echo "    - Got expected result from Nginx (bastion host $host, node $node, port $PORT)"
+	    let SUCCESSES=SUCCESSES+1
+        else
+            echo "*** ERROR - did not get expected result from Nginx (bastion host $host, node $node, port $PORT)"
+            let ERRORS=ERRORS+1
+        fi
+    done
+    let INST=INST+1
+done
+
+INST=1
+for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+    echo "###############################################"
+    echo "### Step 4 - Deleting test resources using bastion host $host"
     TNAME="nginx-$INST"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete svc $TNAME
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete deploy $TNAME
