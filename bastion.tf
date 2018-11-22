@@ -47,7 +47,7 @@ resource "google_compute_instance" "compute-inst" {
     }
   }
   network_interface {
-    network = "${data.google_compute_network.net.name}"
+    subnetwork = "${google_compute_subnetwork.subnet.self_link}"
     access_config {
     }
   }
@@ -79,7 +79,18 @@ resource "google_compute_instance" "compute-inst" {
 
 resource "google_compute_firewall" "fw-ssh" {
   name    = "${var.global_prefix}tcp-ssh"
-  network = "${data.google_compute_network.net.name}"
+  network = "${google_compute_network.net.self_link}"
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = "${var.source_ip_cidr}"
+  target_tags = [ "bastion" ]
+}
+
+resource "google_compute_firewall" "fw-user-ports" {
+  name    = "${var.global_prefix}tcp-user-ports"
+  network = "${google_compute_network.net.self_link}"
   allow {
     protocol = "tcp"
     ports    = "${var.bastion_ports}"

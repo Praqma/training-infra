@@ -2,11 +2,11 @@ resource "google_container_cluster" "k8cluster" {
   name               = "${var.global_prefix}${var.cluster_name}"
   zone               = "${var.gcp_zone}"
   initial_node_count = "${var.initial_worker_node_count}"
-  network            = "${data.google_compute_network.net.name}"
-  subnetwork         = "${data.google_compute_subnetwork.subnet.name}"
+  network            = "${google_compute_network.net.self_link}"
+  subnetwork         = "${google_compute_subnetwork.subnet.self_link}"
   addons_config {
     kubernetes_dashboard {
-      disabled = false
+      disabled = true
     }
     #http_load_balancing {
     #  # Disable GKE ingress controller
@@ -20,8 +20,8 @@ resource "google_container_cluster" "k8cluster" {
 }
 
 resource "google_compute_firewall" "fw-k8s-eph-ports" {
-  name    = "${var.global_prefix}tcp-allow-ephemeral-ports"
-  network = "${data.google_compute_network.net.name}"
+  name    = "${var.global_prefix}tcp-ephemeral-ports"
+  network = "${google_compute_network.net.self_link}"
 
   allow {
     protocol = "tcp"

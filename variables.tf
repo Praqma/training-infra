@@ -31,7 +31,7 @@ variable "source_ip_cidr" {
 }
 
 variable "bastion_ports" {
-  default = ["22", "5000", "8000", "8080"]
+  default = ["5000", "8000", "8080"]
 }
 
 variable "cluster_ports" {
