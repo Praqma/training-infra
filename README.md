@@ -68,7 +68,7 @@ When bastion hosts are ready, kubectl can be authenticated against the
 Kubernetes cluster by the following script:
 
 ```
-enable_kubectl.sh
+enable-kubectl.sh
 ```
 
 Subsequently, kubernetes cluster access can be tested with the following scripts:
