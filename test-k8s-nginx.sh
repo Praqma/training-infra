@@ -17,7 +17,7 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
     echo "### Pass 1 - Testing through bastion host $host"
     TNAME="nginx-$INST"
-    ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl run $TNAME --image nginx
+    ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl create deploy $TNAME --image nginx
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl expose deploy $TNAME --port 80 --type NodePort
     let INST=INST+1
 done
