@@ -56,7 +56,7 @@ resource "google_compute_instance" "compute-inst" {
     startup-script = "${data.template_file.startup_script.rendered}"
   }
   provisioner "file" {
-    source      = "${var.gce_service_account_key}"
+    source      = "${var.gce_service_account_dev_key}"
     destination = "/tmp/service_account.json"
     connection {
         type = "ssh"

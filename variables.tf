@@ -6,6 +6,10 @@ variable "gce_service_account_key" {
   default = "service_account_key.json"
 }
 
+variable "gce_service_account_dev_key" {
+  default = "service_account_dev_key.json"
+}
+
 variable "gcp_project" {
   default = "training-proj"
 }

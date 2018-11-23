@@ -17,14 +17,17 @@ originates.  Typically the /32 external NAT address of the training network. IMP
 
 3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster.
 
-4. `gce_service_account_key` - the service account used to access the Kubernetes cluster. The service account should have the roles `Compute Admin`, `Kubernetes Engine Admin` and `Service Account User`.
+4. `gce_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Kubernetes Engine Admin` and `Service Account User`.
 
-5. `global_prefix` - a nice prefix for the resources created by terraform
+5. `gce_service_account_dev_key` - the service account used to access the Kubernetes cluster. The service account should have the role `Kubernetes Engine Developer` only.
+
+6. `global_prefix` - a nice prefix for the resources created by terraform
 
 An easy way to provide custom values for these variables are to create a file called `terraform.tfvars`, e.g.:
 
 ```
 gce_service_account_key = "your-service-account-key-file.json"
+gce_service_account_dev_key = "your-k8s-dev-service-account-key-file.json"
 global_prefix = "yourname-"
 gcp_project = "project-to-use-for-resources"
 source_ip_cidr = [ "11.22.33.44/32" ]
