@@ -3,7 +3,7 @@ katas](https://github.com/praqma-training/docker-katas) and the Praqma
 [Kubernetes katas](https://github.com/praqma-training/kubernetes-katas/).
 
 The Terraform code assumes an existing GCP project which should be specified
-through the variables.  The project should have compute and container APIs
+through the variables.  The project should have compute, container and IAM APIs
 enabled - see also the script `project-bootstrap.sh`.
 
 The file `variables.tf` contain all the variabes that can be tuned for the
@@ -17,17 +17,14 @@ originates.  Typically the /32 external NAT address of the training network. IMP
 
 3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster.
 
-4. `gce_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Kubernetes Engine Admin` and `Service Account User`.
-
-5. `gce_service_account_dev_key` - the service account used to access the Kubernetes cluster. The service account should have the role `Kubernetes Engine Developer` only.
+4. `gcp_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Kubernetes Engine Admin` and `Service Account Admin`.
 
 6. `global_prefix` - a nice prefix for the resources created by terraform
 
 An easy way to provide custom values for these variables are to create a file called `terraform.tfvars`, e.g.:
 
 ```
-gce_service_account_key = "your-service-account-key-file.json"
-gce_service_account_dev_key = "your-k8s-dev-service-account-key-file.json"
+gcp_service_account_key = "your-service-account-key-file.json"
 global_prefix = "yourname-"
 gcp_project = "project-to-use-for-resources"
 source_ip_cidr = [ "11.22.33.44/32" ]
@@ -67,14 +64,8 @@ and to test running containers and accessing them use:
 test-docker-run.sh
 ```
 
-When bastion hosts are ready, kubectl can be authenticated against the
-Kubernetes cluster by the following script:
-
-```
-enable-kubectl.sh
-```
-
-Subsequently, kubernetes cluster access can be tested with the following scripts:
+When bastion hosts are ready, kubernetes cluster access can be tested with the
+following scripts:
 
 ```
 test-cluster-access.sh

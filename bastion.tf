@@ -14,25 +14,26 @@ apt-get install -y kubectl
 export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
 echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 apt-get update && apt-get install -y google-cloud-sdk
-EOF
-}
 
-data "template_file" "enable_kubectl_script" {
-  template = <<EOF
-#!/bin/sh
-gcloud config configurations create training --activate
-gcloud config set core/project $${project}
-gcloud config set compute/region $${region}
-gcloud config set compute/zone $${zone}
-gcloud auth activate-service-account --key-file /tmp/service_account.json
-gcloud container clusters get-credentials $${cluster_name}
+curl -s https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens > /usr/local/bin/kubens
+chmod +x /usr/local/bin/kubens
+sudo -u ubuntu curl -s https://raw.githubusercontent.com/jonmosco/kube-ps1/master/kube-ps1.sh > /home/ubuntu/.kube-ps1.sh
+sudo -u ubuntu echo "source /home/ubuntu/.kube-ps1.sh" >> /home/ubuntu/.bashrc
+sudo -u ubuntu echo "PS1='[\u@\h \W \$(kube_ps1)]\\$ '" >> /home/ubuntu/.bashrc
+sudo -u ubuntu echo "kubeoff" >> /home/ubuntu/.bashrc
+
+sudo -u ubuntu gcloud config configurations create training --activate
+sudo -u ubuntu gcloud config set core/project $${project}
+sudo -u ubuntu gcloud config set compute/region $${region}
+sudo -u ubuntu gcloud config set compute/zone $${zone}
+sudo -u ubuntu gcloud container clusters get-credentials $${cluster_name}
 EOF
 
   vars {
-    cluster_name = "${var.global_prefix}${var.cluster_name}"
-    zone         = "${var.gcp_zone}"
-    region       = "${var.gcp_region}"
-    project      = "${var.gcp_project}"
+     cluster_name = "${var.global_prefix}${var.cluster_name}"
+     zone         = "${var.gcp_zone}"
+     region       = "${var.gcp_region}"
+     project      = "${var.gcp_project}"
   }
 }
 
@@ -41,6 +42,10 @@ resource "google_compute_instance" "compute-inst" {
   name = "${var.global_prefix}training-${count.index}"
   machine_type = "${var.bastion_machine_type}"
   count   = "${var.bastion_count}"
+  service_account {
+    email = "${google_service_account.account.email}"
+    scopes = [ "cloud-platform" ]
+  }
   boot_disk {
     initialize_params {
       image = "ubuntu-1604-xenial-v20181004"
@@ -54,24 +59,6 @@ resource "google_compute_instance" "compute-inst" {
   metadata {
     sshKeys = "${var.gce_ssh_user}:${file(var.gce_ssh_pub_key_file)}"
     startup-script = "${data.template_file.startup_script.rendered}"
-  }
-  provisioner "file" {
-    source      = "${var.gce_service_account_dev_key}"
-    destination = "/tmp/service_account.json"
-    connection {
-        type = "ssh"
-        user = "${var.gce_ssh_user}"
-        private_key = "${file(var.gce_ssh_private_key_file)}"
-    }
-  }
-  provisioner "file" {
-    content     = "${data.template_file.enable_kubectl_script.rendered}"
-    destination = "/tmp/enable_kubectl.sh"
-    connection {
-        type = "ssh"
-        user = "${var.gce_ssh_user}"
-        private_key = "${file(var.gce_ssh_private_key_file)}"
-    }
   }
 
   tags = [ "bastion" ]

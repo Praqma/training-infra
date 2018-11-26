@@ -2,23 +2,21 @@ variable "global_prefix" {
   default = ""
 }
 
-variable "gce_service_account_key" {
-  default = "service_account_key.json"
-}
-
-variable "gce_service_account_dev_key" {
-  default = "service_account_dev_key.json"
+variable "gcp_service_account_key" {
+  description = "The service account used to create all resource. The service account should have the roles Compute Admin, Kubernetes Engine Admin and Service Account User"
 }
 
 variable "gcp_project" {
-  default = "training-proj"
+  description = "The Google Cloud Platform project to use for created resources"
 }
 
 variable "gcp_region" {
+  description = "The Google Cloud Platform region to use for created resources"
   default = "europe-west1"
 }
 
 variable "gcp_zone" {
+  description = "The Google Cloud Platform zone to use for created resources"
   default = "europe-west1-b"
 }
 
@@ -31,6 +29,7 @@ variable "initial_worker_node_count" {
 }
 
 variable "source_ip_cidr" {
+  description = "The source CIDR from where the training network access originates.  Typically the /32 external NAT address of the training network. Note that this is a list"
   default = [ "0.0.0.0/0" ]
 }
 
