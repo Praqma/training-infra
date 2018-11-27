@@ -24,7 +24,11 @@ variable "cluster_name" {
   default = "training-cluster"
 }
 
-variable "initial_worker_node_count" {
+variable "cluster_machine_type" {
+  default = "n1-standard-1"
+}
+
+variable "cluster_initial_worker_node_count" {
   default = 3
 }
 
