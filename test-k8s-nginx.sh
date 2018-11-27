@@ -16,8 +16,10 @@ INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
     echo "### Step 1 - Create test resource through bastion host $host"
-    TNAME="nginx-$INST"
+    TNAME="autotest-nginx-$INST"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl create deploy $TNAME --image nginx
+    # This is also a capacity test, i.e. do we have sufficient cluster resources for all users
+    ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl scale --replicas 5 deploy $TNAME
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl expose deploy $TNAME --port 80 --type NodePort
     let INST=INST+1
 done
@@ -27,7 +29,7 @@ INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
     echo "### Step 2 - Testing through global access"
-    TNAME="nginx-$INST"
+    TNAME="autotest-nginx-$INST"
     NODES=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get nodes -o jsonpath='"'{.items[*].status.addresses[?\(@.type=='\"'ExternalIP'\"'\)].address}'"')
     PORT=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get svc $TNAME -o jsonpath='"'{@.spec.ports[0].nodePort}'"')
     echo "  Cluster nodes (external-ip): $NODES"
@@ -50,7 +52,7 @@ INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
     echo "### Step 3 - Testing through bastion host $host"
-    TNAME="nginx-$INST"
+    TNAME="autotest-nginx-$INST"
     NODES=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get nodes -o jsonpath='"'{.items[*].status.addresses[?\(@.type=='\"'InternalIP'\"'\)].address}'"')
     PORT=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get svc $TNAME -o jsonpath='"'{@.spec.ports[0].nodePort}'"')
     echo "  Cluster nodes (internal-ip): $NODES"
@@ -72,7 +74,7 @@ INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
     echo "### Step 4 - Deleting test resources using bastion host $host"
-    TNAME="nginx-$INST"
+    TNAME="autotest-nginx-$INST"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete svc $TNAME
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete deploy $TNAME
     let INST=INST+1
