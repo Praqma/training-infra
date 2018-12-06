@@ -17,6 +17,8 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
     echo "### Step 1 - Create test resource through bastion host $host"
     TNAME="autotest-nginx-$INST"
+    TNAME2="autotest-multitool-$INST"
+    ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl create deploy $TNAME2 --image=praqma/network-multitool
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl create deploy $TNAME --image nginx
     # This is also a capacity test, i.e. do we have sufficient cluster resources for all users
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl scale --replicas 5 deploy $TNAME
@@ -70,13 +72,37 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     let INST=INST+1
 done
 
+# FIXME - we should wait for the multitool PODs to be ready...
+
 INST=1
 for host in $(terraform output instance_ips | cut -f 1 -d ','); do
     echo "###############################################"
-    echo "### Step 4 - Deleting test resources using bastion host $host"
+    echo "### Step 4 - Testing multitool, bastion host $host"
     TNAME="autotest-nginx-$INST"
+    TNAME2="autotest-multitool-$INST"
+    CIP=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get svc -o jsonpath='"'{.items[?\(@.metadata.labels.app=='\"'$TNAME'\"'\)].spec.clusterIP}'"')
+    NWTOOL=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl get po -o jsonpath='"'{.items[?\(@.metadata.labels.app=='\"'$TNAME2'\"'\)].metadata.name}'"')
+    echo "  Network tool pod: $NWTOOL, clusterIP $CIP, host $host"
+    ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host  kubectl exec $NWTOOL -- curl -s $CIP:80 | grep -q 'Welcome to nginx!'
+    if [ $? -eq 0 ]; then
+        #echo "    - Got expected result from Nginx (bastion host $host, node $node, port $PORT)"
+        let SUCCESSES=SUCCESSES+1
+    else
+        echo "*** ERROR - did not get expected result from Nginx (bastion host $host, node $node, port $PORT)"
+        let ERRORS=ERRORS+1
+    fi
+    let INST=INST+1
+done
+
+INST=1
+for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+    echo "###############################################"
+    echo "### Step 5 - Deleting test resources using bastion host $host"
+    TNAME="autotest-nginx-$INST"
+    TNAME2="autotest-multitool-$INST"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete svc $TNAME
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete deploy $TNAME
+    ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host kubectl delete deploy $TNAME2
     let INST=INST+1
 done
 
