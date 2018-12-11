@@ -1,8 +1,9 @@
 data "template_file" "startup_script" {
   template = <<EOF
 apt-get update
-apt-get install -y docker.io docker-compose
+apt-get install -y docker.io python-pip
 usermod -aG docker ubuntu
+pip install docker-compose
 
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 
@@ -39,7 +40,7 @@ EOF
 
 resource "google_compute_instance" "compute-inst" {
   zone = "${var.gcp_zone}"
-  name = "${var.global_prefix}training-${count.index}"
+  name = "${var.global_prefix}training-${count.index + 1}"
   machine_type = "${var.bastion_machine_type}"
   count   = "${var.bastion_count}"
   service_account {
@@ -48,7 +49,7 @@ resource "google_compute_instance" "compute-inst" {
   }
   boot_disk {
     initialize_params {
-      image = "ubuntu-1604-xenial-v20181004"
+      image = "${var.bastion_image_name}"
     }
   }
   network_interface {

@@ -38,7 +38,7 @@ variable "source_ip_cidr" {
 }
 
 variable "bastion_ports" {
-  default = ["5000", "8000", "8080"]
+  default = ["5000", "8000", "8080", "8888"]
 }
 
 variable "cluster_ports" {
@@ -55,6 +55,11 @@ variable "gce_ssh_pub_key_file" {
 
 variable "gce_ssh_private_key_file" {
   default = "testkey"
+}
+
+variable "bastion_image_name" {
+  description = "Bastion machine image"
+  default = "ubuntu-1804-lts"
 }
 
 variable "bastion_machine_type" {
