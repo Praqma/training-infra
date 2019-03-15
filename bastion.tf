@@ -22,6 +22,7 @@ sudo -u ubuntu curl -s https://raw.githubusercontent.com/jonmosco/kube-ps1/maste
 sudo -u ubuntu echo "source /home/ubuntu/.kube-ps1.sh" >> /home/ubuntu/.bashrc
 sudo -u ubuntu echo "PS1='[\u@\h \W \$(kube_ps1)]\\$ '" >> /home/ubuntu/.bashrc
 sudo -u ubuntu echo "kubeoff" >> /home/ubuntu/.bashrc
+sudo -u ubuntu echo "source <(kubectl completion bash)" >> /home/ubuntu/.bashrc
 
 sudo -u ubuntu gcloud config configurations create training --activate
 sudo -u ubuntu gcloud config set core/project $${project}
