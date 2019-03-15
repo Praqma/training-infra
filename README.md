@@ -87,3 +87,7 @@ terraform destroy
 ```
 
 Note that Load balancers and persistent volumes are not necessarily destroyed as [documented here](https://cloud.google.com/kubernetes-engine/docs/how-to/deleting-a-cluster).
+
+# Add-ons
+
+The bastions support `kubens` for switching default namespace, `kubeon`/`kubeoff` for enabling prompt with cluster scope and general auto-completion for kubectl.
