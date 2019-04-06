@@ -17,7 +17,7 @@ originates.  Typically the /32 external NAT address of the training network. IMP
 
 3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster.
 
-4. `gcp_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Kubernetes Engine Admin` and `Service Account Admin`.
+4. `gcp_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Compute Network Admin`, `Kubernetes Engine Admin`, `Service Account Admin`, `Service Account User` and `Project IAM Admin`.  You also need to ensure that you have the `IAM API`, `Kubernetes Engine API` and `Cloud Resource Manager API` enabled.
 
 6. `global_prefix` - a nice prefix for the resources created by terraform
 
