@@ -23,6 +23,8 @@ sudo -u ubuntu echo "source /home/ubuntu/.kube-ps1.sh" >> /home/ubuntu/.bashrc
 sudo -u ubuntu echo "PS1='[\u@\h \W \$(kube_ps1)]\\$ '" >> /home/ubuntu/.bashrc
 sudo -u ubuntu echo "kubeoff" >> /home/ubuntu/.bashrc
 sudo -u ubuntu echo "source <(kubectl completion bash)" >> /home/ubuntu/.bashrc
+sudo -u ubuntu echo "alias k=kubectl" >> /home/ubuntu/.bashrc
+sudo -u ubuntu echo "complete -o default -F __start_kubectl k" >> /home/ubuntu/.bashrc
 
 sudo -u ubuntu gcloud config configurations create training --activate
 sudo -u ubuntu gcloud config set core/project $${project}
