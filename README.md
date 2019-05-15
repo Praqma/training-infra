@@ -25,10 +25,13 @@ An easy way to provide custom values for these variables are to create a file ca
 
 ```
 gcp_service_account_key = "your-service-account-key-file.json"
-global_prefix = "yourname-"
 gcp_project = "project-to-use-for-resources"
+global_prefix = "yourname-"
 source_ip_cidr = [ "11.22.33.44/32" ]
-bastion_count = 20
+bastion_count = 14
+bastion_ports = ["80-40000"]
+cluster_initial_worker_node_count = 4
+cluster_machine_type = "n1-standard-4"
 ```
 
 Note that the default variables contain port access lists suitable for the
