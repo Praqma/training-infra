@@ -37,7 +37,7 @@ EOF
      cluster_name = "${var.global_prefix}${var.cluster_name}"
      zone         = "${var.gcp_zone}"
      region       = "${var.gcp_region}"
-     project      = "${var.gcp_project}"
+     project      = "${var.gcp_project_id}"
   }
 }
 

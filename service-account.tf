@@ -9,7 +9,7 @@ resource "google_service_account" "account" {
 #}
 
 resource "google_project_iam_policy" "policy" {
-  project     = "${var.gcp_project}"
+  project     = "${var.gcp_project_id}"
   policy_data = "${data.google_iam_policy.policy.policy_data}"
 }
 

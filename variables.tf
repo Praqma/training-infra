@@ -6,7 +6,7 @@ variable "gcp_service_account_key" {
   description = "The service account used to create all resource. The service account should have the roles Compute Admin, Kubernetes Engine Admin and Service Account User"
 }
 
-variable "gcp_project" {
+variable "gcp_project_id" {
   description = "The Google Cloud Platform project to use for created resources"
 }
 

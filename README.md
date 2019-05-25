@@ -25,7 +25,7 @@ An easy way to provide custom values for these variables are to create a file ca
 
 ```
 gcp_service_account_key = "your-service-account-key-file.json"
-gcp_project = "project-to-use-for-resources"
+gcp_project_id = "project-to-use-for-resources"
 global_prefix = "yourname-"
 source_ip_cidr = [ "11.22.33.44/32" ]
 bastion_count = 14
