@@ -8,19 +8,10 @@ resource "google_service_account" "account" {
 #  public_key_type    = "TYPE_X509_PEM_FILE"
 #}
 
-resource "google_project_iam_policy" "policy" {
-  project     = "${var.gcp_project_id}"
-  policy_data = "${data.google_iam_policy.policy.policy_data}"
-}
-
-data "google_iam_policy" "policy" {
-  binding {
-    role = "roles/container.developer"
-
-    members = [
-      "serviceAccount:${google_service_account.account.email}",
-    ]
-  }
+resource "google_project_iam_member" "project" {
+  project = "${var.gcp_project_id}"
+  role    = "roles/container.developer"
+  member  = "serviceAccount:${google_service_account.account.email}"
 }
 
 #output "dev_service_account_key" {

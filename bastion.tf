@@ -33,7 +33,7 @@ sudo -u ubuntu gcloud config set compute/zone $${zone}
 sudo -u ubuntu gcloud container clusters get-credentials $${cluster_name}
 EOF
 
-  vars {
+  vars = {
      cluster_name = "${var.global_prefix}${var.cluster_name}"
      zone         = "${var.gcp_zone}"
      region       = "${var.gcp_region}"
@@ -60,7 +60,7 @@ resource "google_compute_instance" "compute-inst" {
     access_config {
     }
   }
-  metadata {
+  metadata = {
     sshKeys = "${var.gce_ssh_user}:${file(var.gce_ssh_pub_key_file)}"
     startup-script = "${data.template_file.startup_script.rendered}"
   }
