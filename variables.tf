@@ -1,4 +1,5 @@
 variable "global_prefix" {
+  description = "Make it short. It's used as a prefix for all resources created. They can't have long names."
   default = ""
 }
 
