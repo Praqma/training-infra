@@ -18,6 +18,11 @@ resource "google_container_cluster" "k8cluster" {
     machine_type = "${var.cluster_machine_type}"
     tags         = [ "kubernetes" ]
   }
+  maintenance_policy {
+    daily_maintenance_window {
+      start_time = "00:00"
+    }
+  }
 }
 
 resource "google_compute_firewall" "fw-k8s-eph-ports" {
