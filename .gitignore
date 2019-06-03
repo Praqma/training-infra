@@ -3,3 +3,9 @@ terraform.tfstate
 terraform.tfstate.backup
 .terraform/*
 terraform.tfvars
+
+# For service-account credentials
+*.json
+
+testkey
+testkey.pub
