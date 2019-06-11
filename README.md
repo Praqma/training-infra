@@ -17,6 +17,9 @@ see also the script `project-bootstrap.sh`.
 Depending on your usage, you might need to adjust some of the Quotas on your project.
 
 - Number of training instances -> `Compute Engine API/In-use IP addresses`
+- Number of training instances -> `Compute Engine API/CPUs`
+
+> NB: Keep the region in mind, when requesting a quota change.
 
 ## Configuring
 
