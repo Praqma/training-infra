@@ -6,9 +6,11 @@ katas](https://github.com/praqma-training/docker-katas) and the Praqma
 
 ## Prerequisites
 
-The Terraform code assumes an existing GCP project which should be specified
-through the variables.  The project should have compute, container and IAM APIs
-enabled - see also the script `project-bootstrap.sh`.
+The Terraform code assumes an existing GCP project,
+which should be specified through the variables.
+The project should have the `IAM API`,
+`Kubernetes Engine API` and `Cloud Resource Manager API` enabled -
+see also the script `project-bootstrap.sh`.
 
 ### Quotas
 
@@ -42,7 +44,7 @@ originates.  Typically the /32 external NAT address of the training network. IMP
 
 3. `initial_worker_node_count` - the number of worker nodes in the Kubernetes cluster.
 
-4. `gcp_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Compute Network Admin`, `Kubernetes Engine Admin`, `Service Account Admin`, `Service Account User` and `Project IAM Admin`.  You also need to ensure that you have the `IAM API`, `Kubernetes Engine API` and `Cloud Resource Manager API` enabled.
+4. `gcp_service_account_key` - the service account used to create all resource. The service account should have the roles `Compute Admin`, `Compute Network Admin`, `Kubernetes Engine Admin`, `Service Account Admin`, `Service Account User` and `Project IAM Admin`.
 
 5. `global_prefix` - a nice prefix for the resources created by terraform
 
