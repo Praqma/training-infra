@@ -61,8 +61,9 @@ bastion hosts. They can be created with `ssh-keygen` and the default name is
 
 ## Bootstrapping Infrastructure
 
-> NB: if you used `git clone` on windows, make sure that the `startup-script.tpl` has `LF`
-> line endings and not `CLRF`. Otherwise the startup script won't run correctlyon the VMs
+> NB: if you used `git clone` on windows,
+> make sure that the `startup-script.tpl` has `LF` line endings and not `CLRF`.
+> Otherwise the startup script won't run correctly on the linux VMs.
 
 To bootstrap the infrastructure use terraform as follows:
 
