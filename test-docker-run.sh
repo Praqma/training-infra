@@ -10,7 +10,7 @@ ERRORS=0
 echo "#################################################"
 echo "## Test running container on all bastion hosts ##"
 echo "#################################################"
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     echo "### Testing docker on host $host"
     ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host docker container run -p 8080:80 -d --rm --name testing123 nginx >/dev/null
     curl -s $host:8080 | grep -q 'Welcome to nginx!'

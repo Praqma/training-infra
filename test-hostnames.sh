@@ -8,7 +8,7 @@ KEY=testkey
 ERRORS=0
 
 INST=1
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     NAME="training-$INST\$"
     echo "### Testing host $host (expected name reqex $NAME)"
     HNAME=$(ssh -q -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -i $KEY ubuntu@$host hostname | grep -E -q $NAME)

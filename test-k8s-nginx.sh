@@ -12,7 +12,7 @@ echo "## Test running nginx on Kubernetes cluster ##"
 echo "##############################################"
 
 INST=1
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     echo "###############################################"
     echo "### Step 1 - Create test resource through bastion host $host"
     TNAME="autotest-nginx-$INST"
@@ -27,7 +27,7 @@ done
 
 INST=1
 # The loop here is mostly to get the 'per bastion' instance count and 'do things' through all bastions
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     echo "###############################################"
     echo "### Step 2 - Testing through global access"
     TNAME="autotest-nginx-$INST"
@@ -50,7 +50,7 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
 done
 
 INST=1
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     echo "###############################################"
     echo "### Step 3 - Testing through bastion host $host"
     TNAME="autotest-nginx-$INST"
@@ -74,7 +74,7 @@ done
 # FIXME - we should wait for the multitool PODs to be ready...
 
 INST=1
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     echo "###############################################"
     echo "### Step 4 - Testing multitool, bastion host $host"
     TNAME="autotest-nginx-$INST"
@@ -94,7 +94,7 @@ for host in $(terraform output instance_ips | cut -f 1 -d ','); do
 done
 
 INST=1
-for host in $(terraform output instance_ips | cut -f 1 -d ','); do
+for host in $(terraform output -json instance_ips | jq -r '.[][]'); do
     echo "###############################################"
     echo "### Step 5 - Deleting test resources using bastion host $host"
     TNAME="autotest-nginx-$INST"
