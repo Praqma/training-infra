@@ -29,3 +29,5 @@ sudo -u ubuntu gcloud config set core/project ${project}
 sudo -u ubuntu gcloud config set compute/region ${region}
 sudo -u ubuntu gcloud config set compute/zone ${zone}
 sudo -u ubuntu gcloud container clusters get-credentials ${cluster_name}
+
+${extra_bootstrap_cmds}

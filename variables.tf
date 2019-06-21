@@ -70,3 +70,8 @@ variable "bastion_machine_type" {
 variable "bastion_count" {
   default = 1
 }
+
+variable "extra_bootstrap_cmds" {
+  description = "Additional commands to run during instance bootstrap"
+  default = ""
+}

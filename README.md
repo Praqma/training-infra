@@ -34,6 +34,7 @@ bastion_count = 14
 bastion_ports = ["80-40000"]
 cluster_initial_worker_node_count = 4
 cluster_machine_type = "n1-standard-4"
+extra_bootstrap_cmds = "sudo -u ubuntu bash -c 'cd /home/ubuntu && git clone https://github.com/praqma-training/docker-katas.git && git clone https://github.com/praqma-training/kubernetes-katas.git'"
 ```
 
 The file `variables.tf` contain all the variabes that can be tuned for the
