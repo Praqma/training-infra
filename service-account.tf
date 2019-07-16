@@ -1,5 +1,5 @@
 resource "google_service_account" "account" {
-  account_id   = "${var.global_prefix}k8s-trainee-account"
+  account_id   = "${var.global_prefix}k8s-trainee"
   display_name = "${var.global_prefix}k8s-trainee"
 }
 
