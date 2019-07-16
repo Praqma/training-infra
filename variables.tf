@@ -38,6 +38,10 @@ variable "source_ip_cidr" {
   default = [ "0.0.0.0/0" ]
 }
 
+variable "bastion_name_postfix" {
+  default = "training-"
+}
+
 variable "bastion_ports" {
   default = ["5000", "8000", "8080", "8888"]
 }

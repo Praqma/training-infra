@@ -12,7 +12,7 @@ data "template_file" "startup_script" {
 
 resource "google_compute_instance" "compute-inst" {
   zone = "${var.gcp_zone}"
-  name = "${var.global_prefix}training-${count.index + 1}"
+  name = "${var.global_prefix}${var.bastion_name_postfix}${count.index + 1}"
   machine_type = "${var.bastion_machine_type}"
   count   = "${var.bastion_count}"
   service_account {
